@@ -19,7 +19,7 @@ Pour l'Emploi des Cadres en France) afin de pouvoir ressortir les compétences c
 #     "profil recherché"
 
 
-import extract_offres_brutes
+import extract_offres_brutes, traitement_offre
 
 print("\n\nL'objectif du programme est d'extraire les 10 champs lexicaux les plus remontés dans les offres de l'APEC",
       "afin de pouvoir ressortir les compétences clés les plus demandées sur le marché du travail pour",
@@ -36,11 +36,15 @@ liste_liens_offres = extract_offres_brutes.extract_liste_offres(motscles=user_in
 #Récupération des détails de chaque offre d'emploi
 liste_offres_detaillees = extract_offres_brutes.extract_detail_offres(liste_liens_offres)
 
+offre_unique = traitement_offre.traiter_offres(liste_offres_detaillees)
+
 #Sauvegarde des offres au format txt pour exploitation plus tard
 with open("sauvegarde_offres_python.txt", "w+", encoding='utf8') as f:
-    for elements in liste_offres_detaillees:
-        f.write(str(elements))
+    for elements in offre_unique:
+        #on ne met pas sour_cepage car cela rend illisible le fichier
+        f.write(', \n'.join("%s: %s" % item for item in vars(elements).items() if item[0] != "source_page"))
         f.write("\n\n\n----------------------------------------------------------------------------------\n\n\n")
         f.write("\n\nOFFRE SUIVANTE\n\n")
         f.write("\n\n\n----------------------------------------------------------------------------------\n\n\n")
 
+print("FIN DU PROGRAMME !\n")
